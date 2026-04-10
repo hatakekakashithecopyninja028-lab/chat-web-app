@@ -6,8 +6,9 @@ import toast from "react-hot-toast";
 const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [typingTimeout, setTypingTimeout] = useState(null);
   const fileInputRef = useRef(null);
-  const { sendMessage } = useChatStore();
+  const { sendMessage, emitTyping, emitStopTyping ,selectedUser } = useChatStore();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -15,6 +16,8 @@ const MessageInput = () => {
       toast.error("Please select an image file");
       return;
     }
+   
+
 
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -28,8 +31,30 @@ const MessageInput = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+const handleTypingChange = (e) => {
+  const newText = e.target.value;
+  setText(newText);
+
+  emitTyping(selectedUser._id); // 🔥 fix
+console.log("EMIT TYPING", selectedUser?._id);
+  if (typingTimeout) {
+    clearTimeout(typingTimeout);
+  }
+
+  const timeout = setTimeout(() => {
+    emitStopTyping(selectedUser._id); // 🔥 fix
+  }, 1500);
+
+  setTypingTimeout(timeout);
+};
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+      emitStopTyping();
+    }
+    
     if (!text.trim() && !imagePreview) return;
 
     try {
@@ -37,7 +62,6 @@ const MessageInput = () => {
         text: text.trim(),
         image: imagePreview,
       });
-
 
       setText("");
       setImagePreview(null);
@@ -76,7 +100,7 @@ const MessageInput = () => {
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
             placeholder="Type a message..."
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={handleTypingChange}
           />
           <input
             type="file"
@@ -85,6 +109,8 @@ const MessageInput = () => {
             ref={fileInputRef}
             onChange={handleImageChange}
           />
+          
+          
 
           <button
             type="button"

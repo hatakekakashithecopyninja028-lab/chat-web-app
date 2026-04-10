@@ -47,7 +47,7 @@ const validateForm = () => {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900/20 to-black p-4 lg:p-8 gap-6 lg:gap-12 w-full relative overflow-hidden">
       {/* Animated background particles */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 right-20 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 left-20 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 right-1/4 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl animate-ping"></div>
@@ -63,64 +63,59 @@ const validateForm = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6 ">
+        <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
           {/* Username */}
-           <label className=" label-text  -translate-y-1/2 text-md text-white transition-all duration-300 peer-focus:-translate-y-8 peer-focus:text-indigo-400 peer-placeholder-shown:translate-y-0 peer-focus:scale-75">
-              Username
+           <label className="left-12 top-1/2 -translate-y-1/2 text-sm text-white/80 transition-all duration-300 peer-focus:-translate-y-6 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:text-xs pointer-events-none z-10 ">
+              Full Name
             </label>
           <div className="relative">
-            
-            
-            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white h-5 w-5" />
+           
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white h-5 w-5 z-20 pointer-events-none" />
             <input
               type="text"
               name="fullName"
-              placeholder=" username "
+              placeholder=" Full Name"
               value={formData.fullName}
               onChange={handleInputChange}
-
-              className="w-full h-14 pl-12 pr-4 bg-white/10 border border-white/20 rounded-2xl text-white  focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-transparent transition-all duration-300 peer"
+              className="w-full h-14 pl-12 pr-4 bg-white/10 border border-white/20 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-transparent transition-all duration-300 peer"
             />
-           
           </div>
 
           {/* Email */}
-           <label className="text-md text-white transition-all duration-300 peer-focus:-translate-y-6 peer-focus:text-indigo-400 zz:scale-75">
+           <label className=" left-12 top-1/2 -translate-y-1/2 text-sm text-white/80 transition-all duration-300 peer-focus:-translate-y-6 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:text-xs pointer-events-none z-10  px-2">
               Email Address
             </label>
           <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white h-5 w-5" />
+           
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white h-5 w-5 z-20 pointer-events-none" />
             <input
               type="email"
               name="email"
               placeholder="your@gmail.com "
               value={formData.email}
               onChange={handleInputChange}
-
-              className="w-full h-14 pl-12 pr-4 bg-white/10 border border-white/20 rounded-2xl text-white  focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300 peer"
+              className="w-full h-14 pl-12 pr-4 bg-white/10 border border-white/20 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300 peer"
             />
-           
           </div>
 <label className="  -translate-y-1/2 text-md text-white transition-all duration-300 peer-focus:-translate-y-6 peer-focus:text-indigo-400 peer-placeholder-shown:translate-y-0 peer-focus:scale-75">
               Password
             </label>
           {/* Password */}
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white h-5 w-5" />
+           
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white h-5 w-5 z-20 pointer-events-none" />
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
-              placeholder="......" 
+              placeholder="..... "
               value={formData.password}
               onChange={handleInputChange}
-
-              className="w-full h-14 pl-12 pr-12 bg-white/10  border border-white/20 rounded-2xl text-white  transition-all duration-300 peer"
+              className="w-full h-14 pl-12 pr-12 bg-white/10 border border-white/20 rounded-2xl text-white transition-all duration-300 peer"
             />
-            
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-400 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-400 transition-colors z-30"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
@@ -130,8 +125,10 @@ const validateForm = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full h-14 bg-gradient-to-r bg-black hover:from-indigo-700  hover:to-cyan-700 text-white font-semibold rounded-2xl backdrop-blur-sm shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/40 transform hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2"
-          > {isSigningUp ? (
+            disabled={isSigningUp}
+            className="w-full px-8 min-h-[48px] relative z-20 shadow-lg hover:shadow-indigo-500/25 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white font-semibold rounded-2xl backdrop-blur-sm touch-manipulation pointer-events-auto active:opacity-90 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
+          >
+            {isSigningUp ? (
                 <>
                   <Loader2 className="size-5 animate-spin" />
                   Loading...
@@ -146,7 +143,10 @@ const validateForm = () => {
         <div className="mt-8 text-center">
           <p className="text-white">
             Already have an account?{' '}
-            <Link to="/login" className="text-white hover:text-black font-semibold transition-colors">
+            <Link 
+              to="/login" 
+              className="relative z-20 inline-block px-4 py-2 bg-indigo-600/20 hover:bg-indigo-600 text-white hover:text-indigo-200 font-semibold rounded-lg touch-manipulation pointer-events-auto transition-all duration-300 active:opacity-90 min-h-[44px] flex items-center"
+            >
               Sign in here
             </Link>
           </p>

@@ -21,6 +21,28 @@ const userSocketMap = {};
 io.on("connection", (socket) => {
   console.log("A user connected", socket.id);
 
+
+  socket.on("typing", ({ receiverId }) => {
+  const receiverSocketId = userSocketMap[receiverId];
+
+  console.log("receiverSocketId:", receiverSocketId);
+
+  if (receiverSocketId) {
+    io.to(receiverSocketId).emit("typing", {
+      senderId: socket.handshake.query.userId,
+    });
+  }
+});
+  socket.on("stopTyping", ({ receiverId }) => {
+  const receiverSocketId = userSocketMap[receiverId];
+
+  if (receiverSocketId) {
+    io.to(receiverSocketId).emit("stopTyping", {
+      senderId: socket.handshake.query.userId,
+    });
+  }
+});
+
   const userId = socket.handshake.query.userId;
   if (userId) userSocketMap[userId] = socket.id;
 

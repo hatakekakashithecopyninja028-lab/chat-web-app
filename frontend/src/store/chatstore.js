@@ -5,7 +5,6 @@ import { io } from "socket.io-client";
 
 import { api } from "../api/axios";
 
-
 export const useChatStore = create((set, get) => ({
   messages: [],
   users: [],
@@ -42,7 +41,7 @@ export const useChatStore = create((set, get) => ({
       const res = await api.post(`/messages/send/${selectedUser._id}`, messageData);
       set({ messages: [...messages, res.data] });
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error);
     }
   },
   sendingmessage: () => {
@@ -66,10 +65,17 @@ export const useChatStore = create((set, get) => ({
     socket.off("newMessage");
   },
 
-setSelectedUser: (selectedUser) => {
-  set({ selectedUser });}
+  emitTyping: (receiverId) => {
+  const socket = useAuthStore.getState().socket;
+  socket.emit("typing", { receiverId });
+},
 
+emitStopTyping: (receiverId) => {
+  const socket = useAuthStore.getState().socket;
+  socket.emit("stopTyping", { receiverId });
+},
 
-
-
-}))
+  setSelectedUser: (selectedUser) => {
+    set({ selectedUser });
+  }
+}));

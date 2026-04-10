@@ -14,6 +14,7 @@ export const useAuthStore = create((set, get) => ({
   isUpdatingProfile: false,
   isCheckingAuth: true,
   onlineUsers :[],
+  socket: null,
 
 checkAuth: async () => {
     try {
@@ -93,11 +94,24 @@ connectSocket: () => {
     });
     socket.connect();
 
+    socket.getReceiverSocketId = (userId) => {
+      // This will be populated from backend somehow
+      return null; // temporary
+    };
+
     set({ socket: socket });
 
     socket.on("getOnlineUsers", (userIds) => {
       set({ onlineUsers: userIds });
     });
+
+    const handleTyping = () => {
+  socket.emit("typing", { receiverId });
+};
+
+const handleStopTyping = () => {
+  socket.emit("stopTyping", { receiverId });
+};
   },
   disconnectSocket: () => {
     if (get().socket?.connected) get().socket.disconnect();
